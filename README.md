@@ -1,2 +1,2 @@
-# yuuvis-momentum-java-tutorials
-Java code examples for yuuvis® Momentum endpoints
+# Java-Tutorials
+This repository publicizes source code for our tutorials on https://help.optimal-systems.com/ 

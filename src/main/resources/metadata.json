@@ -1,0 +1,17 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "document"
+      },
+      "Name": {
+        "value": "Test"
+      }
+    },
+    "contentStreams": [{
+      "mimeType": "text/plain",
+      "fileName": "test.txt",
+      "cid": "cid_63apple"
+    }]
+  }]
+}
