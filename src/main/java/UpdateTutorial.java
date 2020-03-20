@@ -95,6 +95,22 @@ public class UpdateTutorial {
             String updateMetadataResponseString = updateMetadataResponse.body().string();
             System.out.println(updateMetadataResponseString);
 
+            //Patch Update Metadata
+            Request patchMetadataRequest = new Request.Builder()
+                    .header("Authorization", auth)
+                    .header("X-ID-TENANT-NAME", tenant)
+                    .url(baseUrl + "/api/dms/objects/" + objectId)
+                    .patch(RequestBody.create(JSON, new File("./src/main/resources/metadataPatch.json")))
+                    .build();
+
+            Response patchMetadataResponse = client.newCall(patchMetadataRequest).execute();
+            String patchMetadataResponseString = patchMetadataResponse.body().string();
+            System.out.println(patchMetadataResponseString);
+
+            //wait for index service to catch up
+            TimeUnit.SECONDS.sleep(1);
+
+
             //wait for index service to catch up
             TimeUnit.SECONDS.sleep(1);
 
