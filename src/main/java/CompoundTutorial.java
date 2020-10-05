@@ -75,7 +75,7 @@ public class CompoundTutorial {
 
             RequestBody compoundImportRequestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("data", "indexData.json", RequestBody.create(JSON, compoundImportJsonString))
+                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, compoundImportJsonString))
                     .addFormDataPart("cid_63apple", "compound.bin", RequestBody.create(OCTETSTREAM, compoundFile))
                     .build();
 
@@ -115,7 +115,7 @@ public class CompoundTutorial {
 
             RequestBody partialCompoundImportRequestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("data", "indexData.json", RequestBody.create(JSON, incompleteCompoundImportString))
+                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, incompleteCompoundImportString))
                     .addFormDataPart("cid_63apple", "compound.bin", RequestBody.create(OCTETSTREAM, compoundFile))
                     .build();
 
@@ -152,7 +152,7 @@ public class CompoundTutorial {
 
             RequestBody postPartialDocumentImportRequestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("data", "indexData.json", RequestBody.create(JSON, postPartialDocumentImportJsonString))
+                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, postPartialDocumentImportJsonString))
                     .build();
 
             Request postPartialDocumentImportRequest = new Request.Builder()

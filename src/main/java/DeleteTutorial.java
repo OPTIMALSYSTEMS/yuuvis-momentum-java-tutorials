@@ -33,9 +33,9 @@ public class DeleteTutorial {
                     .Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("data",
-                            "indexData.json",
+                            "metadata.json",
                             RequestBody.create(JSON,
-                                    new File("./src/main/resources/indexData.json")))
+                                    new File("./src/main/resources/metadata.json")))
                     .addFormDataPart("cid_63apple",
                             "test.txt",
                             RequestBody.create(PLAINTEXT,
@@ -78,7 +78,7 @@ public class DeleteTutorial {
             //delete old version
             Request deleteVersionRequest = new Request.Builder()
 //                    .header("Authorization", "Basic "+auth)
-                    .header("X-ID-TENANT-NAME", "default")
+                    .header("X-ID-TENANT-NAME", "")
                     .url(baseUrl + "/api/dms/objects/"+objectId+"/versions/1")
                     .delete().build();
 

@@ -51,16 +51,16 @@ public class GetTutorial {
                     .Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("data",
-                            "indexData.json",
+                            "metadata.json",
                             RequestBody.create(JSON,
-                                    new File("./src/main/resources/indexData.json")))
+                                    new File("./src/main/resources/metadata.json")))
                     .addFormDataPart("cid_63apple",
                             "test.txt",
                             RequestBody.create(PLAINTEXT,
                                     new File("./src/main/resources/test.txt")))
                     .build();
             Request importRequest = new Request.Builder()
-                    .header("Authorization", "Basic " + auth)
+                    .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects")
                     .post(importRequestBody)
@@ -74,18 +74,18 @@ public class GetTutorial {
             objectId = parseObjectIdFromJsonResponse(importResponseString);
 
             //Update Metadata
-            //read new metadata from file indexData2.json
-            String updatedIndexDataString = "";
+            //read new metadata from file metadataUpdate.json
+            String updatedmetadataString = "";
             String currentLine = "";
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("./src/main/resources/indexData2.json"));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader("./src/main/resources/metadataUpdate.json"));
             while ((currentLine = bufferedReader.readLine()) != null){
-                updatedIndexDataString += "\n "+currentLine;
+                updatedmetadataString += "\n "+currentLine;
             }
             Request updateMetadataRequest = new Request.Builder()
                     //.header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/" + objectId)
-                    .post(RequestBody.create(JSON, updatedIndexDataString))
+                    .post(RequestBody.create(JSON, updatedmetadataString))
                     .build();
             Response updateMetadataResponse = client.newCall(updateMetadataRequest).execute();
 
