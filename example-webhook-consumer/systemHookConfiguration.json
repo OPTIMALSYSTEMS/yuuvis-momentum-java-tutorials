@@ -1,0 +1,13 @@
+{
+	"systemhooks": {
+		"webhooks": [
+			{
+				"enable": true,
+				"predicate": "spel:true",
+				"type": "dms.request.update.metadata",
+				"url": "http://examplewebhook/api/dms/request/update/metadata",
+				"useDiscovery": true
+			}
+		]
+	}
+}

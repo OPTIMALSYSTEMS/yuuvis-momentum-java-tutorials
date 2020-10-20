@@ -1,0 +1,19 @@
+eureka:
+  instance:
+    status-page-url-path: /info
+    health-check-url-path: /health
+    metadata-map:
+      instanceId: ${spring.application.name}:${spring.application.index:${server.port}}
+  client:
+    service-url:
+      defaultZone: http://${APPLICATION_DOMAIN:${COMPUTERNAME:localhost}}:7261/eureka/
+
+# disable default http time metric 
+# uses the default httpinterceptor interface: byte[] body
+management:
+  endpoint.health.show-details: ALWAYS
+  endpoints:
+    web:
+      base-path: /manage
+      exposure:
+        include: '*'
