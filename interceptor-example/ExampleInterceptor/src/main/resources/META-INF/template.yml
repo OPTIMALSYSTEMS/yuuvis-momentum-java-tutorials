@@ -1,0 +1,9 @@
+# template configuration
+applications:
+ - name: exampleInterceptor
+   type: microservice
+   profiles: prod,cloud
+   instances: 1
+   memory: 512M
+   port: 10666
+   path: .

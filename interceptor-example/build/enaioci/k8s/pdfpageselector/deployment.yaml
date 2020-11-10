@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: $NAMESPACE
+  labels:
+    app: enaio
+    name: exampleinterceptor
+  name: exampleinterceptor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: exampleinterceptor
+    spec:
+      initContainers:
+      - name: init-organization
+        image: busybox
+        command: ["sh", "-c", "until wget -q --spider http://configservice/manage/health; do echo waiting for configservice; sleep 11; done;"]
+        imagePullPolicy: IfNotPresent
+      containers:
+      - name: exampleinterceptor
+        image: docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$BUILD_IMAGE
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /manage/info
+            port: 10666
+          initialDelaySeconds: 600
+          periodSeconds: 10
+          timeoutSeconds: 5
+        env:
+        - name: JAVA_OPTS
+          value: -Xmx512M
+        - name: SERVER_PORT
+          value: "10666"
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod,docker,kubernetes
+        - name: SPRING_CLOUD_CONFIG_URI
+          value: "http://configservice/config"
+        ports:
+        - containerPort: 10666
+      restartPolicy: Always
+      automountServiceAccountToken: false
+      imagePullSecrets:
+      - name: osgitlab

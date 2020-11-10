@@ -1,0 +1,27 @@
+#default values for single instantiation 
+
+management.security.enabled: false
+
+eureka:
+  instance:
+    status-page-url-path: /info
+    health-check-url-path: /health
+    metadata-map:
+      instanceId: ${spring.application.name}:${spring.application.index:${server.port}}
+  client:
+    service-url:
+      defaultZone: http://${APPLICATION_DOMAIN:${COMPUTERNAME:localhost}}:7261/eureka/
+
+
+
+
+
+
+
+repository:
+  url: 'http://repository/api/dms/objects'
+  useDiscovery: true
+  
+#repository:
+#  url: 'http://<host>:<port>/api/dms/objects'
+#  useDiscovery: false

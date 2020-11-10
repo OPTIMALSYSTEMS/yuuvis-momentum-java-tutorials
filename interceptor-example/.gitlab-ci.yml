@@ -1,0 +1,120 @@
+image: docker:latest
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+
+before_script:
+  - eval export SERVICE_NAME=${DOCKER_ENV_CI_PROJECT_NAME}
+  - eval export SHORT_GIT_SHA=${CI_COMMIT_SHA:0:8}
+  # TODO need to think about branch name sanitization
+  - eval export CI_SHORT_BRANCH_NAME=${CI_COMMIT_REF_NAME:4}
+  - eval export SANITIZED_BRANCH_NAME=$(echo $CI_SHORT_BRANCH_NAME | sed -e "s/\//-/g")
+  # The image tag of this build
+  - eval export NAMESPACE=${SANITIZED_BRANCH_NAME}
+  - eval export BUILD_IMAGE=${SANITIZED_BRANCH_NAME}-${SHORT_GIT_SHA}
+
+stages:
+  - build
+  - package
+  - deploy
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script:
+  - mvn clean package -f PdfPageSelectorInterceptor/pom.xml -DskipTests -B --settings settings.xml
+  artifacts:
+    paths:
+      - PdfPageSelectorInterceptor/target/*.jar
+    expire_in: 1h
+  except:
+    - /^((k8s\/.*$)|(k8s_\d{4}-\d{1,2}-\d{1,2})|(k8s_deploy_\d{4}-\d{1,2}-\d{1,2}))/
+
+pdfpageselector-k8s-maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script:
+  - mvn clean package -f PdfPageSelectorInterceptor/pom.xml -DskipTests -Pkubernetes -B --settings settings.xml
+  artifacts:
+    paths:
+      - PdfPageSelectorInterceptor/target/*.jar
+    expire_in: 30min
+  only:
+    refs:
+      - /^((k8s\/.*$)|(k8s_\d{4}-\d{1,2}-\d{1,2})|(k8s_deploy_\d{4}-\d{1,2}-\d{1,2}))/
+     
+docker-build-release:
+  stage: package
+  only:
+  - /k8s_\d{4}-\d{1,2}-\d{1,2}/
+  - /k8s_deploy_\d{4}-\d{1,2}-\d{1,2}/
+  except:
+  - branches
+  dependencies:
+    - pdfpageselector-k8s-maven-build
+  script:
+  - eval export COMMIT_TAG_IMAGE=${CI_COMMIT_TAG:(-10)}
+  - docker build -t docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$COMMIT_TAG_IMAGE .
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.optimal-systems.org
+  - docker push docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$COMMIT_TAG_IMAGE
+
+docker-build-release-eureka:
+  stage: package
+  only:
+  - /k8s_eureka_\d{4}-\d{1,2}-\d{1,2}/
+  except:
+  - branches
+  dependencies:
+    - maven-build
+  script:
+  - eval export COMMIT_TAG_IMAGE=${CI_COMMIT_TAG:4}
+  - docker build -t docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$COMMIT_TAG_IMAGE .
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.optimal-systems.org
+  - docker push docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$COMMIT_TAG_IMAGE
+  
+docker-build-pdfpageselector:
+  stage: package
+  only:
+    - /k8s\/.*$/
+  dependencies:
+    - pdfpageselector-k8s-maven-build
+  except:
+    - /k8s\/latest.*$/
+  script:
+  - docker build -t docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$BUILD_IMAGE .
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.optimal-systems.org
+  - docker push docker.optimal-systems.org/oktopus/pdf-page-selector-interceptor/pdfpageselector:$BUILD_IMAGE
+
+k8s-deploy-release:
+  image: docker.optimal-systems.org/oktopus/hel/enaioci-k8s-dpl-client:latest
+  stage: deploy
+  only:
+  - /k8s_deploy_\d{4}-\d{1,2}-\d{1,2}/
+  except:
+  - branches
+  script:
+    - eval export NAMESPACE=latest
+    - eval export BUILD_IMAGE=${CI_COMMIT_TAG:11}
+    - eval export HOSTNAME=latest.enaioci.net
+    - echo $CI_KUBECONFIG | base64 -d > /kube.conf
+    - export KUBECONFIG=/kube.conf
+    - if ! cat build/enaioci/k8s/namespace.yaml | envsubst | kubectl apply -f -; then cat build/enaioci/k8s/namespace.yaml | envsubst '${NAMESPACE}' | kubectl apply -f -; fi
+    - cat build/enaioci/k8s/pdfpageselector/service.yaml | envsubst '${BUILD_IMAGE} ${NAMESPACE}' | kubectl apply -f -
+    - cat build/enaioci/k8s/pdfpageselector/deployment.yaml | envsubst '${BUILD_IMAGE} ${NAMESPACE}' | kubectl apply -f -
+
+k8s-deploy-pdfpageselector:
+  image: docker.optimal-systems.org/oktopus/hel/enaioci-k8s-dpl-client:latest
+  stage: deploy
+  only:
+    - /k8s\/.*$/
+  except:
+    - /k8s\/latest.*$/
+  script:
+    - echo $CI_KUBECONFIG | base64 -d > /kube.conf
+    - export KUBECONFIG=/kube.conf
+    - if ! cat build/enaioci/k8s/namespace.yaml | envsubst | kubectl apply -f -; then cat build/enaioci/k8s/namespace.yaml | envsubst '${NAMESPACE}' | kubectl apply -f -; fi
+    - cat build/enaioci/k8s/pdfpageselector/service.yaml | envsubst '${BUILD_IMAGE} ${NAMESPACE}' | kubectl apply -f -
+    - cat build/enaioci/k8s/pdfpageselector/deployment.yaml | envsubst '${BUILD_IMAGE} ${NAMESPACE}' | kubectl apply -f -
