@@ -1,4 +1,4 @@
-package com.os.services.interceptor.PdfPageSelectorInterceptor;
+package com.os.services.interceptor.ExampleInterceptor;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
