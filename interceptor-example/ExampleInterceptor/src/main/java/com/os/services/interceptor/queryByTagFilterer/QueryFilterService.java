@@ -20,9 +20,10 @@ import java.util.Map;
 
 @Service
 public class QueryFilterService {
+    @Value("${search.url}")
     private String searchUrl;
 
-    @Value("${repository.useDiscovery}")
+    @Value("${search.useDiscovery}")
     private boolean useDiscovery;
 
     @Autowired
@@ -48,12 +49,15 @@ public class QueryFilterService {
                 new SearchResponseExtractor(outputStream));
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, Object> enrichQueryByTagFilter(Map<String, Object> incomingQuery){
-        String statement = String.valueOf(incomingQuery.get("statement"));
-        String filteredStatement = statement + "AND system:tags[test] > 2";
+        Map<String, Object> queryMap = (Map<String, Object>)incomingQuery.get("query");
+        String statement = String.valueOf(queryMap.get("statement"));
+        String filteredStatement = statement + " AND system:tags[test] < 2";
+        queryMap.replace("statement", filteredStatement);
 
         Map<String, Object> filteredQuery = incomingQuery;
-        filteredQuery.replace("statement", (Object)filteredStatement);
+        filteredQuery.replace("query", queryMap);
 
         return filteredQuery;
     }

@@ -22,6 +22,6 @@ repository:
   url: 'http://repository/api/dms/objects'
   useDiscovery: true
   
-#repository:
-#  url: 'http://<host>:<port>/api/dms/objects'
-#  useDiscovery: false
+search:
+  url: 'http://search/api/dms/objects/search'
+  useDiscovery: true

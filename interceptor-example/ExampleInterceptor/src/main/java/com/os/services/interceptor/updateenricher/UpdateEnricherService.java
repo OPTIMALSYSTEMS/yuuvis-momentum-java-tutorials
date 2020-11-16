@@ -56,19 +56,13 @@ public class UpdateEnricherService {
         List<Map<String, Object>> list = (List<Map<String, Object>>)incomingMetadata.get("objects");
         Map<String, Object> dmsApiObject = list.get(0);
         Map<String, Object> propertyMap = (Map<String, Object>)dmsApiObject.get("properties");
-        Map<String, Object> tagMap = (Map<String, Object>)propertyMap.get("system:tags");
-        List<List<Object>> tagList = (List<List<Object>>)tagMap.get("value");
-        for(List<Object>tag :tagList){
-            if(String.valueOf(tag.get(0)).equals("test")){
-                tag.set(1, ((Integer)tag.get(1)+1));
-            }
-        }
-        tagMap.replace("value", tagList);
-        propertyMap.replace("system:tags", tagMap);
+        Map<String, Object> testStringMap = (Map<String, Object>)propertyMap.get("appJmeter:testString3");
+        String oldValue = testStringMap.get("value").toString();
+        testStringMap.replace("value", (oldValue+ " (enriched value)"));
+        propertyMap.replace("appJmeter:testString1", testStringMap);
         dmsApiObject.replace("properties", propertyMap);
         list.set(0, dmsApiObject);
         Map<String, Object> enrichedMetadata = incomingMetadata;
-        enrichedMetadata.replace("objects", list);
         return enrichedMetadata;
     }
 
