@@ -1,8 +1,10 @@
 package com.os.services.interceptor.queryByTagFilterer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -33,9 +36,12 @@ public class QueryFilterService {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public void filterQueryByTag(OutputStream outputStream, Map<String, Object> incomingQuery, String authorization) {
+
+
+    public void filterQueryByTag(OutputStream outputStream, Map<String, Object> incomingQuery, String authorization) throws IOException {
         RestTemplate restTemplate = useDiscovery ? this.restTemplate : this.restTemplateStatic;
         Map<String, Object> filteredQuery = enrichQueryByTagFilter(incomingQuery);
+
         restTemplate.execute(searchUrl,
                 HttpMethod.POST,
                 (ClientHttpRequest requestCallback) -> {
@@ -53,7 +59,12 @@ public class QueryFilterService {
     public Map<String, Object> enrichQueryByTagFilter(Map<String, Object> incomingQuery){
         Map<String, Object> queryMap = (Map<String, Object>)incomingQuery.get("query");
         String statement = String.valueOf(queryMap.get("statement"));
-        String filteredStatement = statement + " AND system:tags[test] < 2";
+        String filteredStatement = "";
+        if (statement.contains("WHERE")){
+            filteredStatement = statement + " AND WHERE system:tags[\"test\"].state > 1";
+        } else {
+            filteredStatement = statement + " WHERE system:tags[\"test\"].state > 1";
+        }
         queryMap.replace("statement", filteredStatement);
 
         Map<String, Object> filteredQuery = incomingQuery;
@@ -65,6 +76,7 @@ public class QueryFilterService {
     /**
      * This class can be used for manipulating the search result.
      */
+
     public class SearchResponseExtractor implements ResponseExtractor<Object>{
         private OutputStream outputStream;
 

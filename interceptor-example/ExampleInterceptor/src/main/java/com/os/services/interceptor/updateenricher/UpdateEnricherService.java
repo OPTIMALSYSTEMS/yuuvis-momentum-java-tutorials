@@ -56,7 +56,7 @@ public class UpdateEnricherService {
         List<Map<String, Object>> list = (List<Map<String, Object>>)incomingMetadata.get("objects");
         Map<String, Object> dmsApiObject = list.get(0);
         Map<String, Object> propertyMap = (Map<String, Object>)dmsApiObject.get("properties");
-        Map<String, Object> testStringMap = (Map<String, Object>)propertyMap.get("appJmeter:testString3");
+        Map<String, Object> testStringMap = (Map<String, Object>)propertyMap.get("appJmeter:testString1");
         String oldValue = testStringMap.get("value").toString();
         testStringMap.replace("value", (oldValue+ " (enriched value)"));
         propertyMap.replace("appJmeter:testString1", testStringMap);
