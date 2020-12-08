@@ -23,5 +23,5 @@ repository:
   useDiscovery: true
   
 search:
-  url: 'http://search/api/dms/objects/search'
-  useDiscovery: true
+  url: 'http://10.10.1.43:7221/api/search/dsl'
+  useDiscovery: false

@@ -59,11 +59,7 @@ public class UpdateEnricherService {
         Map<String, Object> testStringMap = (Map<String, Object>)propertyMap.get("appJmeter:testString1");
         String oldValue = testStringMap.get("value").toString();
         testStringMap.replace("value", (oldValue+ " (enriched value)"));
-        propertyMap.replace("appJmeter:testString1", testStringMap);
-        dmsApiObject.replace("properties", propertyMap);
-        list.set(0, dmsApiObject);
-        Map<String, Object> enrichedMetadata = incomingMetadata;
-        return enrichedMetadata;
+        return incomingMetadata;
     }
 
     public class MetadataResponseExtractor implements ResponseExtractor<Object>{

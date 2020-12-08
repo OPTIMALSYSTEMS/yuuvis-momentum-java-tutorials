@@ -1,10 +1,8 @@
 package com.os.services.interceptor.queryByTagFilterer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -17,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -61,7 +58,7 @@ public class QueryFilterService {
         String statement = String.valueOf(queryMap.get("statement"));
         String filteredStatement = "";
         if (statement.contains("WHERE")){
-            filteredStatement = statement + " AND WHERE system:tags[\"test\"].state > 1";
+            filteredStatement = statement + " AND system:tags[\"test\"].state > 1";
         } else {
             filteredStatement = statement + " WHERE system:tags[\"test\"].state > 1";
         }

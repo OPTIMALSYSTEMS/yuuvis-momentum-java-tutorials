@@ -1,6 +1,5 @@
 package com.os.services.interceptor.rest;
 
-import com.netflix.discovery.converters.Auto;
 import com.os.services.interceptor.updateenricher.UpdateEnricherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Map;
 
