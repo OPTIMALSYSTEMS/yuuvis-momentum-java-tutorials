@@ -11,11 +11,11 @@ public class RoleSetTutorial {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType PLAINTEXT = MediaType.parse("text/plain; charset=utf-8");
-    public static final String username = "root";
-    public static final String userpassword = "optimal";
+    public static final String username = "";
+    public static final String userpassword = "";
     public static final String auth = "Basic "+ Base64.getEncoder().encodeToString((username+":"+userpassword).getBytes());
-    public static final String tenant = "default";
-    public static final String baseUrl = "http://10.10.6.242/api/";
+    public static final String tenant = "";
+    public static final String baseUrl = "";
 
     public static void main(String[] args) {
 
