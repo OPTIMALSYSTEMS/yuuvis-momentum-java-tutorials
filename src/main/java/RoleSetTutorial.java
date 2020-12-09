@@ -1,16 +1,10 @@
 import okhttp3.*;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONObject;
-
-import java.io.File;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.util.Base64;
 
 public class RoleSetTutorial {
 
-    public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final MediaType PLAINTEXT = MediaType.parse("text/plain; charset=utf-8");
     public static final String username = "";
     public static final String userpassword = "";
     public static final String auth = "Basic "+ Base64.getEncoder().encodeToString((username+":"+userpassword).getBytes());
@@ -18,8 +12,6 @@ public class RoleSetTutorial {
     public static final String baseUrl = "";
 
     public static void main(String[] args) {
-
-        String objectId = "";
 
         try {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
