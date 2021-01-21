@@ -10,11 +10,11 @@ public class TaggingTutorial {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType PLAINTEXT = MediaType.parse("text/plain; charset=utf-8");
-    public static final String username = "";
-    public static final String userpassword = "";
+    public static final String username = "root";
+    public static final String userpassword = "optimal";
     public static final String auth = "Basic "+ Base64.getEncoder().encodeToString((username+":"+userpassword).getBytes());
-    public static final String tenant = "";
-    public static final String baseUrl = "";
+    public static final String tenant = "default";
+    public static final String baseUrl = "http://10.10.6.242/api/dms/";
 
     public static void main(String[] args) {
 
@@ -52,8 +52,6 @@ public class TaggingTutorial {
             //parse created ObjectId from Import Response Text
             objectId = parseObjectIdFromJsonResponse(importResponseString);
 
-            RequestBody addTagBody = RequestBody.create(null, new byte[]{});
-
             String tagName = "testTag";
             String tagValue = "1";
 
@@ -62,7 +60,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/" + objectId + "/tags/" + tagName + "/state/" + tagValue)
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response addTagResponse = client.newCall(addTagRequest).execute();
@@ -87,7 +85,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/" + objectId + "/tags/" + tagName + "/state/" + newTagValue + "?overwrite=true")
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response updateTagResponse = client.newCall(updateTagRequest).execute();
@@ -101,7 +99,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/tags/" + tagName + "/state/" + newTagValue + "?query=" + statement)
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response queryTagResponse = client.newCall(queryTagRequest).execute();
