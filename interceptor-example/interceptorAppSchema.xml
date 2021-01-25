@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://optimal-systems.org/ns/dmscloud/schema/v5.0/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://optimal-systems.org/ns/dmscloud/schema/v5.0/ dmsCloud-schema.xsd">
+
+	<propertyStringDefinition>
+		<id>testString1</id>
+		<propertyType>string</propertyType>
+		<cardinality>single</cardinality>
+		<required>false</required>
+		<defaultValue>default</defaultValue>
+	</propertyStringDefinition>
+	
+	<propertyStringDefinition>
+		<id>testString2</id>
+		<propertyType>string</propertyType>
+		<cardinality>single</cardinality>
+		<required>false</required>
+		<maxLength>50</maxLength>
+		<minLength>5</minLength>
+	</propertyStringDefinition>
+
+	<typeDocumentDefinition>
+		<id>exampleDoc</id>
+		<baseId>system:document</baseId>
+		<propertyReference>testString1</propertyReference>
+		<propertyReference>testString2</propertyReference>
+		<contentStreamAllowed>allowed</contentStreamAllowed>
+	</typeDocumentDefinition>
+	
+</schema>

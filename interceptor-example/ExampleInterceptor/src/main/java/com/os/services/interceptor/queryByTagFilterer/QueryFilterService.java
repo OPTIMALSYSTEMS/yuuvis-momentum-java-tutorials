@@ -64,10 +64,9 @@ public class QueryFilterService {
         }
         queryMap.replace("statement", filteredStatement);
 
-        Map<String, Object> filteredQuery = incomingQuery;
-        filteredQuery.replace("query", queryMap);
+        incomingQuery.replace("query", queryMap);
 
-        return filteredQuery;
+        return incomingQuery;
     }
 
     /**
