@@ -1,7 +1,9 @@
 package com.os.services.webhook.rest;
 import java.util.List;
 import java.util.Map;
- 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dms/request")
 public class ExampleRestController
 {
+    private final Logger LOGGER = LoggerFactory.getLogger(ExampleRestController.class);
+
     @PostMapping(value = "/update/metadata", produces = {"application/json"})
     public Map<String, Object> updateDmsObjectMetadata(@RequestBody Map<String, Object> dmsApiObjectList, 
                                                        @RequestHeader(value = "Authorization", required = true) String authorization)
@@ -31,13 +35,13 @@ public class ExampleRestController
     private void doSomething(Map<String, Object> dmsApiObjectList, String authorization)
     {
         Object nameValue = getProperty(dmsApiObjectList);
-        System.out.println(nameValue.toString());
+        LOGGER.info(nameValue.toString());
     }
 
     private Map<String, Object> filterSomething(Map<String, Object> dmsApiObjectList, String authorization)
     {
         Map<String, Object> filteredDmsApiObjectList = filterExcludedProperty(dmsApiObjectList);
-        System.out.println(filteredDmsApiObjectList);
+        LOGGER.info(filteredDmsApiObjectList.toString());
         return filteredDmsApiObjectList;
     }
 
