@@ -52,8 +52,6 @@ public class TaggingTutorial {
             //parse created ObjectId from Import Response Text
             objectId = parseObjectIdFromJsonResponse(importResponseString);
 
-            RequestBody addTagBody = RequestBody.create(null, new byte[]{});
-
             String tagName = "testTag";
             String tagValue = "1";
 
@@ -62,7 +60,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/" + objectId + "/tags/" + tagName + "/state/" + tagValue)
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response addTagResponse = client.newCall(addTagRequest).execute();
@@ -87,7 +85,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/" + objectId + "/tags/" + tagName + "/state/" + newTagValue + "?overwrite=true")
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response updateTagResponse = client.newCall(updateTagRequest).execute();
@@ -101,7 +99,7 @@ public class TaggingTutorial {
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects/tags/" + tagName + "/state/" + newTagValue + "?query=" + statement)
-                    .post(addTagBody)
+                    .post(RequestBody.create(null, new byte[0]))
                     .build();
 
             Response queryTagResponse = client.newCall(queryTagRequest).execute();
