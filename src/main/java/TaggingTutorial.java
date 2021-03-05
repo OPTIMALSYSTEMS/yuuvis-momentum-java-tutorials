@@ -52,7 +52,7 @@ public class TaggingTutorial {
             //parse created ObjectId from Import Response Text
             objectId = parseObjectIdFromJsonResponse(importResponseString);
 
-            String tagName = "testTag";
+            String tagName = "analysis";
             String tagValue = "1";
 
             //Add Tag
@@ -92,7 +92,7 @@ public class TaggingTutorial {
             String updateTagResponseString = updateTagResponse.body().string();
             System.out.println(updateTagResponseString);
 
-            String statement = "SELECT * FROM system:object where system:creationDate=Today()";
+            String statement= "SELECT * FROM system:object WHERE system:tags[analysis].(state=2 AND creationDate=TODAY())";
 
             //Query Tag
             Request queryTagRequest = new Request.Builder()
