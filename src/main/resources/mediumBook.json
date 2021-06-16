@@ -1,0 +1,40 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "appBibjsonsample:medium"
+      },
+      "appBibjsonsample:bibjson": {
+        "value": {
+          "type": "book",
+          "title": "My Book Title",
+          "author": [
+            {"name": "Heinrich Schuetzel"},
+            {"name": "Maximilian Sturz"}
+          ],
+          "year": "1995",
+          "owner": "My Library",
+          "id": "ID_of_book",
+          "url": "http://mylibrary.com/ebooks/36513466534",
+          "publisher": "Example Verlag Mustershagen",
+          "edition": {
+            "number": 2,
+            "language": "English"
+          },
+          "identifier":[
+            {
+              "id": "0002-9327",
+              "type": "issn"
+            }
+          ]
+        }
+      },
+      "appBibjsonsample:locations": {
+        "value": [
+          "central library, CN-3214-5324",
+          "branch library east, 43-654b"
+        ]
+      }
+    }
+  }]
+}

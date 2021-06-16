@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://optimal-systems.org/ns/dmscloud/schema/v5.0/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://optimal-systems.org/ns/dmscloud/schema/v5.0/ dmsCloud-schema.xsd">
+
+    <propertyStructuredDataDefinition>
+        <id>bibjsonsample:bibjson</id>
+        <description>field for the BibJSON structure identifying and describing the medium</description>
+        <propertyType>structureddata</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+    </propertyStructuredDataDefinition>
+    <propertyStringDefinition>
+        <id>bibjsonsample:locations</id>
+        <description>field for storage locations of printed versions of the medium</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <typeDocumentDefinition>
+        <id>bibjsonsample:medium</id>
+        <baseId>system:document</baseId>
+        <propertyReference>bibjsonsample:bibjson</propertyReference>
+        <propertyReference>bibjsonsample:locations</propertyReference>
+        <contentStreamAllowed>allowed</contentStreamAllowed>
+    </typeDocumentDefinition>
+
+</schema>
