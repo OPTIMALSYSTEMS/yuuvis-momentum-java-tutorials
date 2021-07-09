@@ -30,7 +30,10 @@ public class TaggingTutorial {
         addTag(objectId, "analysis", "1");
         addTag(objectId, "testtag", "7");
 
-        // Retrieve tag values via Tagging API. At the same time, the request ensures that the tags are added also in the Elasticsearch index.
+        // Retrieve tag values via Tagging API.
+        // This call is included in this tutorial not only to demonstrate the usage of the corresponding tagging
+        // endpoint, but also to avoid a hard coded waiting time to ensure that the tags are added also in the
+        // Elasticsearch index.
         getTags(objectId);
 
         // Query and update a tag.
@@ -129,13 +132,13 @@ public class TaggingTutorial {
 
     public static void addTagWithTraceId(String objectId, String tagName, String tagValue, String traceId) throws Exception {
         try {
-            // Use the endpoint with traceIdMustMatch=true and set the value for the traceId in the header.
+            // Set the value for the traceId in the header.
             // Configure the request to add a tag with name 'tagName' and state 'tagValue' to the object specified by 'objectId'.
             Request addTagRequest = new Request.Builder()
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .header("X-B3-TraceId", traceId)
-                    .url(baseUrl + "/api/dms/objects/" + objectId + "/tags/" + tagName + "/state/" + tagValue + "?traceIdMustMatch=true")
+                    .url(baseUrl + "/api/dms/objects/" + objectId + "/tags/" + tagName + "/state/" + tagValue)
                     .post(RequestBody.create(null, new byte[0]))
                     .build();
 
@@ -243,7 +246,7 @@ public class TaggingTutorial {
             Response deleteTagResponse = client.newCall(deleteTagRequest).execute();
 
             // Print a message depending on the response returned by the tag deletion endpoint.
-            if(deleteTagResponse.code() == 200) System.out.println("Successfully deleted.");
+            if(deleteTagResponse.code() == 200) System.out.println("Tag '" + tagName + "' successfully deleted.");
             else System.out.println("Error while deleting: " + deleteTagResponse.code());
         }
         catch (Exception e) {
@@ -324,7 +327,7 @@ public class TaggingTutorial {
             // Execute the deletion.
             Response deleteResponse = client.newCall(deleteRequest).execute();
 
-            if(deleteResponse.code() == 200) System.out.println("Successfully deleted.");
+            if(deleteResponse.code() == 200) System.out.println("Object successfully deleted.");
             else System.out.println("Error while deleting: " + deleteResponse.code());
         }
         catch (Exception e) {
