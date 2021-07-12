@@ -2,6 +2,8 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.Base64;
 
 public class StructuredDataTutorial {
@@ -12,13 +14,13 @@ public class StructuredDataTutorial {
     public static final String auth = "Basic "+Base64.getEncoder().encodeToString((username+":"+userpassword).getBytes());
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-    public static OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    public static OkHttpClient client = builder.build();
+    private static CookieJar cookieJar = new JavaNetCookieJar(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+    private static OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
 
     public static void main(String[] args) throws Exception
     {
         // Import the example app schema.
-        importSchema();
+        //importSchema();
 
         // Import two example objects and store their object IDs.
         String importedBook = importObject("./src/main/resources/mediumBook.json");
@@ -65,6 +67,13 @@ public class StructuredDataTutorial {
         // (6) Search within a list and full-text search with CONTAINS.
         searchForObjects(
                 "SELECT appBibjsonsample:bibjson.title FROM appBibjsonsample:medium WHERE appBibjsonsample:bibjson.author[*].name CONTAINS('Sturz')",
+                0,
+                50);
+
+        // (7) Search for objects where 'appBibjsonsample:bibjson' contains 'Schuetzel' in the value for the key 'author[*].name'
+        //     that can be at any hierarchical level within the JSON and display only key-value mappings for keys 'id'.
+        searchForObjects(
+                "SELECT appBibjsonsample:bibjson..id FROM appBibjsonsample:medium WHERE appBibjsonsample:bibjson..author[*].name CONTAINS('Schuetzel')",
                 0,
                 50);
 
