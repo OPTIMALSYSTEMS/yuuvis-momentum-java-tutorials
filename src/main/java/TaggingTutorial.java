@@ -37,7 +37,7 @@ public class TaggingTutorial {
         getTags(objectId);
 
         // Query and update a tag.
-        queryTag("analysis", "2", "SELECT * FROM system:object WHERE system:tags[analysis].(state=1 AND creationDate=TODAY())");
+        queryTag("analysis", "2", "SELECT * FROM document WHERE system:tags[analysis].(state=1 AND (creationDate=YESTERDAY() OR creationDate=TODAY()))");
 
         // Update a tag via Tagging API.
         updateTag(objectId, "analysis", "3");
