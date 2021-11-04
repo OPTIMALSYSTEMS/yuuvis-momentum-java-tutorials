@@ -1,0 +1,9 @@
+# template configuration
+applications:
+  - name: upsert-validation-webhook
+    type: microservice
+    profiles: prod,cloud
+    instances: 1
+    memory: 512M
+    port: 10700
+    path: .

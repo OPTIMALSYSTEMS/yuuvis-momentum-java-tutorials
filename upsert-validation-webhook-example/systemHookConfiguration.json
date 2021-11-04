@@ -1,0 +1,13 @@
+{
+  "systemhooks": {
+    "webhooks": [
+      {
+        "enable": true,
+        "predicate": "spel:properties['Name']!=null && (properties['Name']['value'])!=null",
+        "type": "dms.request.objects.upsert.database-before",
+        "url": "http://validationWebhook/api/dms/request/upsert",
+        "useDiscovery": true
+      }
+    ]
+  }
+}
