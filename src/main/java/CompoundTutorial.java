@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 import okhttp3.*;
 import org.apache.commons.io.FileUtils;
@@ -21,17 +23,14 @@ public class CompoundTutorial {
     public static final String tenant = "";
     public static final String baseUrl = "";
 
-    public static OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    public static OkHttpClient client = builder.build();
+    public static CookieJar cookieJar = new JavaNetCookieJar(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+    public static OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
 
 
     public static void main(String[] args) {
         createImportCompoundDocument();
     }
 
-    /**
-     * creates and imports compound document from 3 text files
-     */
     public static void createImportCompoundDocument() {
         try {
             byte[] document1BA = FileUtils.readFileToByteArray(new File("./src/main/resources/test.txt"));
@@ -42,35 +41,35 @@ public class CompoundTutorial {
             OutputStream bos = new BufferedOutputStream(new FileOutputStream(compoundFile));
 
             String[] ranges = new String[3];
-            String[] partialNames = new String[3];
+            String[] SubNames = new String[3];
 
-            //write partial document bytestreams into binary compound file
+            //write bytestreams into binary compound file
             long offset = 0;
             long document1BAlength = document1BA.length;
             String range1 = offset + "-" + (offset + document1BAlength - 1);
             bos.write(document1BA);
             ranges[0] = range1;
-            partialNames[0] = "test.txt";
+            SubNames[0] = "test.txt";
 
             offset += document1BAlength;
             long document2BAlength = document2BA.length;
             String range2 = offset + "-" + (offset + document2BAlength - 1);
             bos.write(document2BA);
             ranges[1] = range2;
-            partialNames[1] = "test1.txt";
+            SubNames[1] = "test1.txt";
 
             offset += document2BAlength;
             long document3BAlength = document3BA.length;
             String range3 = (offset) + "-" + (offset + document3BAlength - 1);
             bos.write(document3BA);
             ranges[2] = range3;
-            partialNames[2] = "test2.txt";
+            SubNames[2] = "test2.txt";
 
             IOUtils.closeQuietly(bos);
 
-            //import compound document and 3/3 partial documents
-            System.out.println("Attempting import of complete compound document");
-            String compoundImportJsonString = createCompoundImportMetadataObject("testCompound", "./compound.bin", "cid_63apple", partialNames, ranges).toString();
+            //import compound document and 3 sub-documents
+            System.out.println("Attempting import of compound document and 3 sub-documents.");
+            String compoundImportJsonString = createCompoundImportMetadataObject("testCompound", "compound.bin", "cid_63apple", SubNames, ranges).toString();
             System.out.println(compoundImportJsonString);
 
             RequestBody compoundImportRequestBody = new MultipartBody.Builder()
@@ -86,145 +85,107 @@ public class CompoundTutorial {
                     .post(compoundImportRequestBody)
                     .build();
 
+            System.out.println(compoundImportRequest);
             Response compoundImportResponse = client.newCall(compoundImportRequest).execute();
             String compoundImportResponseString = compoundImportResponse.body().string();
             String contentStreamId = extractContentStreamIdFromResponse(compoundImportResponseString);
             String repositoryId = extractRepositoryIdFromResponse(compoundImportResponseString);
-            String[] partialDocumentObjectIds = extractPartialDocumentObjectIdsFromResponse(compoundImportResponseString);
+            String archivePath = extractArchivePathFromResponse(compoundImportResponseString);
+            String compoundObjectId = extractFirstObjectIdFromResponse(compoundImportResponseString);
+            String[] subDocumentObjectIds1 = extractSubDocumentObjectIdsFromResponse(compoundImportResponseString);
 
-//            System.out.println(compoundImportResponseString);
-//            System.out.println(contentStreamId);
-//            System.out.println(repositoryId);
+            System.out.println(compoundImportResponseString);
 
             TimeUnit.SECONDS.sleep(5);
-            //retrieve text of individual documents
-            for (String objectId : partialDocumentObjectIds) {
+            //retrieve content of the sub-documents
+            for (String objectId : subDocumentObjectIds1) {
                 System.out.println(objectId);
-                Request getContentOfPartialDocumentRequest = new Request.Builder()
+                Request getContentOfSubDocumentRequest = new Request.Builder()
                         .header("Authorization", auth)
                         .header("X-ID-TENANT-NAME", tenant)
                         .url(baseUrl + "objects/" + objectId + "/contents/file")
                         .get().build();
-                Response getContentOfPartialDocumentResponse = client.newCall(getContentOfPartialDocumentRequest).execute();
-                System.out.println(getContentOfPartialDocumentResponse.body().string());
+                Response getContentOfSubDocumentResponse = client.newCall(getContentOfSubDocumentRequest).execute();
+                System.out.println(getContentOfSubDocumentResponse.body().string());
             }
 
-            //import again, this time with 2/3 partial documents contained in the metadata on import
-            System.out.println("Attempting import of compound document without all partial documents");
-            String incompleteCompoundImportString = createCompoundImportMetadataObject("testCompound2", "./compound.bin", "cid_63apple", new String[]{partialNames[0], partialNames[1]}, new String[]{ranges[0], ranges[1]}).toString();
+            //subsequently, import one more sub-document using the contentStreamId, repositoryId and archivePath of the compound document
+            System.out.println("Attempting subsequent import a sub-document.");
+            String postSubDocumentImportJsonString = createSubImportMetadataObject(contentStreamId, repositoryId, archivePath, new String[]{"sub-concatenation.txt"}, new String[]{"1159-1365,0-45"}).toString();
+            System.out.println(postSubDocumentImportJsonString);
 
-            RequestBody partialCompoundImportRequestBody = new MultipartBody.Builder()
+            RequestBody postSubDocumentImportRequestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, incompleteCompoundImportString))
-                    .addFormDataPart("cid_63apple", "compound.bin", RequestBody.create(OCTETSTREAM, compoundFile))
+                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, postSubDocumentImportJsonString))
                     .build();
 
-            Request partialCompoundImportRequest = new Request.Builder()
+            Request postSubDocumentImportRequest = new Request.Builder()
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
                     .url(baseUrl + "objects")
-                    .post(partialCompoundImportRequestBody)
+                    .post(postSubDocumentImportRequestBody)
                     .build();
 
-            Response partialCompoundImportResponse = client.newCall(partialCompoundImportRequest).execute();
-            String partialCompoundImportResponseString = partialCompoundImportResponse.body().string();
-            String contentStreamId2 = extractContentStreamIdFromResponse(partialCompoundImportResponseString);
-            String repositoryId2 = extractRepositoryIdFromResponse(partialCompoundImportResponseString);
-            String[] partialDocumentObjectIds2 = extractPartialDocumentObjectIdsFromResponse(partialCompoundImportResponseString);
+            Response postSubDocumentImportResponse = client.newCall(postSubDocumentImportRequest).execute();
+            String postSubDocumentImportResponseString = postSubDocumentImportResponse.body().string();
+            String[] subDocumentObjectIds2 = extractSubDocumentObjectIdsFromResponse(postSubDocumentImportResponseString);
 
             TimeUnit.SECONDS.sleep(5);
-            //retrieve text of individual documents
-            for (String objectId : partialDocumentObjectIds2) {
-                System.out.println(objectId);
-                Request getContentOfPartialDocumentRequest = new Request.Builder()
-                        .header("Authorization", auth)
-                        .header("X-ID-TENANT-NAME", tenant)
-                        .url(baseUrl + "objects/" + objectId + "/contents/file")
-                        .get().build();
-                Response getContentOfPartialDocumentResponse = client.newCall(getContentOfPartialDocumentRequest).execute();
-                System.out.println(getContentOfPartialDocumentResponse.body().string());
-            }
+            //retrieve content of the new sub-document
+            String objectId = subDocumentObjectIds2[0];
+            System.out.println(objectId);
 
-            //finally, import the last partial document using the contentStreamId of the compound document
-            System.out.println("Attempting import of remaining partial document");
-            String postPartialDocumentImportJsonString = createPartialImportMetadataObject(contentStreamId2, repositoryId2, new String[]{partialNames[2]}, new String[]{ranges[2]}).toString();
-            System.out.println(postPartialDocumentImportJsonString);
-
-            RequestBody postPartialDocumentImportRequestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("data", "metadata.json", RequestBody.create(JSON, postPartialDocumentImportJsonString))
-                    .build();
-
-            Request postPartialDocumentImportRequest = new Request.Builder()
+            Request getContentOfSubDocumentRequest = new Request.Builder()
                     .header("Authorization", auth)
                     .header("X-ID-TENANT-NAME", tenant)
-                    .url(baseUrl + "objects")
-                    .post(postPartialDocumentImportRequestBody)
-                    .build();
+                    .url(baseUrl + "objects/" + objectId + "/contents/file")
+                    .get().build();
 
-            Response postPartialDocumentImportResponse = client.newCall(postPartialDocumentImportRequest).execute();
-            String postPartialDocumentImportResponseString = postPartialDocumentImportResponse.body().string();
-            String[] partialDocumentObjectIds3 = extractPartialDocumentObjectIdsFromResponse(postPartialDocumentImportResponseString);
+            Response getContentOfSubDocumentResponse = client.newCall(getContentOfSubDocumentRequest).execute();
+            System.out.println(getContentOfSubDocumentResponse.body().string());
 
             TimeUnit.SECONDS.sleep(5);
-            //retrieve text of individual documents
-            for (String objectId : partialDocumentObjectIds3) {
-                System.out.println(objectId);
-                Request getContentOfPartialDocumentRequest = new Request.Builder()
-                        .header("Authorization", auth)
-                        .header("X-ID-TENANT-NAME", tenant)
-                        .url(baseUrl + "objects/" + objectId + "/contents/file")
-                        .get().build();
-                Response getContentOfPartialDocumentResponse = client.newCall(getContentOfPartialDocumentRequest).execute();
-                System.out.println(getContentOfPartialDocumentResponse.body().string());
-            }
+            //delete the created objects
+            deleteObject(subDocumentObjectIds2[0]);
+            deleteSubdocuments(subDocumentObjectIds1);
+            deleteObject(compoundObjectId);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static JSONObject createCompoundImportMetadataObject(String name, String path, String cid, String[] partialNames, String[] ranges) {
-        if (partialNames.length == ranges.length) {
+    public static JSONObject createCompoundImportMetadataObject(String name, String path, String cid, String[] SubNames, String[] ranges) {
+        if (SubNames.length == ranges.length) {
             JSONObject root = new JSONObject();
             JSONArray objects = new JSONArray();
             objects.put(createCompoundDocumentMetadataObject(name, path, cid));
-            for (int i = 0; i < partialNames.length; i++) {
-                objects.put(createPartialDocumentMetadataObject(partialNames[i], path, cid, ranges[i]));
+            for (int i = 0; i < SubNames.length; i++) {
+                objects.put(createSubDocumentMetadataObject(SubNames[i], path, cid, ranges[i]));
             }
             root.put("objects", objects);
             return root;
         } else {
-            System.out.println("amount of ranges and names for partial documents do not match!");
+            System.out.println("amount of ranges and names for sub-documents do not match!");
             return null;
         }
     }
 
-    public static JSONObject createPartialImportMetadataObject(String contentStreamId, String repo, String[] partialNames, String[] ranges) {
-        if (partialNames.length == ranges.length) {
+    public static JSONObject createSubImportMetadataObject(String contentStreamId, String repo, String archivePath, String[] SubNames, String[] ranges) {
+        if (SubNames.length == ranges.length) {
             JSONObject root = new JSONObject();
             JSONArray objects = new JSONArray();
-            for (int i = 0; i < partialNames.length; i++) {
-                objects.put(createPostPartialDocumentMetadataObject(partialNames[i], contentStreamId, repo, ranges[i]));
+            for (int i = 0; i < SubNames.length; i++) {
+                objects.put(createPostSubDocumentMetadataObject(SubNames[i], contentStreamId, repo, archivePath, ranges[i]));
             }
             root.put("objects", objects);
             return root;
         } else {
-            System.out.println("amount of ranges and names for partial documents do not match!");
+            System.out.println("amount of ranges and names for sub-documents do not match!");
             return null;
         }
     }
 
-    ;
-
-    /**
-     * creates the metadata object for a compound document
-     *
-     * @param name
-     * @param path
-     * @param cid
-     * @return
-     */
     public static JSONObject createCompoundDocumentMetadataObject(String name, String path, String cid) {
         JSONObject compoundDocument = new JSONObject();
         JSONObject properties = new JSONObject();
@@ -242,17 +203,8 @@ public class CompoundTutorial {
         return compoundDocument;
     }
 
-    /**
-     * creates the metadata object for a single partial document for importing alongside the compound document
-     *
-     * @param name
-     * @param path
-     * @param cid
-     * @param range
-     * @return
-     */
-    public static JSONObject createPartialDocumentMetadataObject(String name, String path, String cid, String range) {
-        JSONObject partialDocument = new JSONObject();
+    public static JSONObject createSubDocumentMetadataObject(String name, String path, String cid, String range) {
+        JSONObject SubDocument = new JSONObject();
         JSONObject properties = new JSONObject();
         properties.put("system:objectTypeId", new JSONObject().put("value", "document"));
         properties.put("name", new JSONObject().put("value", name));
@@ -263,23 +215,14 @@ public class CompoundTutorial {
         contentStream.put("range", range);
         JSONArray contentStreams = new JSONArray();
         contentStreams.put(contentStream);
-        partialDocument.put("properties", properties);
-        partialDocument.put("contentStreams", contentStreams);
+        SubDocument.put("properties", properties);
+        SubDocument.put("contentStreams", contentStreams);
 
-        return partialDocument;
+        return SubDocument;
     }
 
-    /**
-     * creates the metadata object for a partial document for importing after the initial import of the corresponding compound document
-     *
-     * @param name
-     * @param contentStreamId
-     * @param repo
-     * @param range
-     * @return
-     */
-    public static JSONObject createPostPartialDocumentMetadataObject(String name, String contentStreamId, String repo, String range) {
-        JSONObject partialDocument = new JSONObject();
+    public static JSONObject createPostSubDocumentMetadataObject(String name, String contentStreamId, String repo, String archivePath, String range) {
+        JSONObject SubDocument = new JSONObject();
         JSONObject properties = new JSONObject();
         properties.put("system:objectTypeId", new JSONObject().put("value", "document"));
         properties.put("name", new JSONObject().put("value", name));
@@ -287,21 +230,16 @@ public class CompoundTutorial {
         contentStream.put("mimeType", "text/plain");
         contentStream.put("contentStreamId", contentStreamId);
         contentStream.put("repositoryId", repo);
+        contentStream.put("archivePath", archivePath);
         contentStream.put("range", range);
         JSONArray contentStreams = new JSONArray();
         contentStreams.put(contentStream);
-        partialDocument.put("properties", properties);
-        partialDocument.put("contentStreams", contentStreams);
+        SubDocument.put("properties", properties);
+        SubDocument.put("contentStreams", contentStreams);
 
-        return partialDocument;
+        return SubDocument;
     }
 
-    /**
-     * extracts contentstreamId from a response
-     *
-     * @param responseJson
-     * @return
-     */
     public static String extractContentStreamIdFromResponse(String responseJson) {
         JSONObject responseJSONObject = new JSONObject(responseJson);
         return responseJSONObject.getJSONArray("objects")
@@ -311,12 +249,6 @@ public class CompoundTutorial {
                 .getString("contentStreamId");
     }
 
-    /**
-     * extracts repositoryId from a response
-     *
-     * @param responseJson
-     * @return
-     */
     public static String extractRepositoryIdFromResponse(String responseJson) {
         JSONObject responseJSONObject = new JSONObject(responseJson);
         return responseJSONObject.getJSONArray("objects")
@@ -326,13 +258,25 @@ public class CompoundTutorial {
                 .getString("repositoryId");
     }
 
-    /**
-     * extracts the objectIds of partial documents (meaning objects with contentstreams containing at least one range) from a response
-     *
-     * @param responseJson
-     * @return
-     */
-    public static String[] extractPartialDocumentObjectIdsFromResponse(String responseJson) {
+    public static String extractArchivePathFromResponse(String responseJson) {
+        JSONObject responseJSONObject = new JSONObject(responseJson);
+        return responseJSONObject.getJSONArray("objects")
+                .getJSONObject(0)
+                .getJSONArray("contentStreams")
+                .getJSONObject(0)
+                .getString("archivePath");
+    }
+
+    public static String extractFirstObjectIdFromResponse(String responseJson) {
+        JSONObject responseJSONObject = new JSONObject(responseJson);
+        return responseJSONObject.getJSONArray("objects")
+                .getJSONObject(0)
+                .getJSONObject("properties")
+                .getJSONObject("system:objectId")
+                .getString("value");
+    }
+
+    public static String[] extractSubDocumentObjectIdsFromResponse(String responseJson) {
         JSONObject responseJSONObject = new JSONObject(responseJson);
         JSONArray objects = responseJSONObject.getJSONArray("objects");
         List<String> objectIds = new ArrayList<>();
@@ -345,6 +289,54 @@ public class CompoundTutorial {
         return objectIds.toArray(new String[objectIds.size()]);
     }
 
+    public static void deleteSubdocuments(String[] objectIds) {
+        try {
+            JSONObject root = new JSONObject();
+            JSONArray objects = new JSONArray();
+            for (int i = 0; i < objectIds.length; i++) {
+                objects.put(
+                        new JSONObject()
+                                .put("properties", new JSONObject()
+                                        .put("system:objectId", new JSONObject()
+                                                .put("value", objectIds[i]))));
+            }
+            root.put("objects", objects);
+            System.out.println("Attempting deletion of all following objects: "+root);
+
+            Request deleteRequest = new Request.Builder()
+                    .header("Authorization", auth)
+                    .header("X-ID-TENANT-NAME", tenant)
+                    .header("Content-Type", "application/json")
+                    .url(baseUrl + "objects")
+                    .delete(RequestBody.create(JSON, String.valueOf(root))).build();
+
+            Response deleteResponse = client.newCall(deleteRequest).execute();
+
+            if(deleteResponse.code() == 200) System.out.println("Objects successfully deleted.");
+            else System.out.println("Error while deleting: " + deleteResponse.code() + deleteResponse.body().string());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void deleteObject(String objectId) {
+        try {
+            System.out.println("Attempting deletion of single object with ID "+objectId);
+
+            Request deleteRequest = new Request.Builder()
+                    .header("Authorization", auth)
+                    .header("X-ID-TENANT-NAME", tenant)
+                    .url(baseUrl + "objects/"+objectId)
+                    .delete().build();
+
+            Response deleteResponse = client.newCall(deleteRequest).execute();
+
+            if(deleteResponse.code() == 200) System.out.println("Object successfully deleted.");
+            else System.out.println("Error while deleting: " + deleteResponse.code() + deleteResponse.body().string());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
-
-
