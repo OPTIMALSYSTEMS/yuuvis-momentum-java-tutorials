@@ -1,0 +1,19 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 http://maven.apache.org/xsd/settings-1.2.0.xsd">
+
+    <mirrors>
+        <mirror>
+            <id>release-http-unblocker</id>
+            <mirrorOf>central</mirrorOf>
+            <name></name>
+            <url>http://my-url/libs-release</url>
+        </mirror>
+        <mirror>
+            <id>snapshot-http-unblocker</id>
+            <mirrorOf>snapshots</mirrorOf>
+            <name></name>
+            <url>http://my-url/libs-snapshot</url>
+        </mirror>
+    </mirrors>
+</settings>

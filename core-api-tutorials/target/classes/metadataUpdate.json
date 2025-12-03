@@ -1,0 +1,18 @@
+{
+  "objects": [{
+    "properties": {
+      "system:tags": {
+        "value": [
+          [
+            "tag1",
+            100
+          ],
+          [
+            "tag2",
+            9876
+          ]
+        ]
+      }
+    }
+  }]
+}

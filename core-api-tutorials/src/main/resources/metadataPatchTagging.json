@@ -1,0 +1,12 @@
+{
+  "objects": [{
+    "properties": {
+      "Name": {
+        "value": "Test 3"
+      },
+      "system:tags": {
+        "value": [["analysis",4],["contentprocessing:resistant",13]]
+      }
+    }
+  }]
+}

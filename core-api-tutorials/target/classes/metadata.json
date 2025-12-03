@@ -1,0 +1,14 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "system:document"
+      }
+    },
+    "contentStreams": [{
+      "mimeType": "text/plain",
+      "fileName": "geisslein.txt",
+      "cid": "cid0"
+    }]
+  }]
+}

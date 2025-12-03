@@ -1,0 +1,28 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "system:document"
+      },
+      "secondaryObjectTypeIds": {
+        "value": ["appPetshop:pet"]
+      },
+      "appPetshop:breed": {
+        "value": "Deilenaar"
+      },
+      "appPetshop:species": {
+        "value": "rabbit"
+      },
+      "appPetshop:dateOfBirth": {
+        "value": "2025-11-20T16:18:06.478Z"
+      },
+      "appPetshop:price": {
+        "value": "30.50"
+      }
+    },
+    "contentStreams": [{
+      "fileName": "1080px-Deilenaar.jpeg",
+      "cid": "cid_63apple"
+    }]
+  }]
+}

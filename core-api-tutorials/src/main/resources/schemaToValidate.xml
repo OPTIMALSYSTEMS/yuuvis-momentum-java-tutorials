@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://optimal-systems.org/ns/dmscloud/schema/v5.0/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://optimal-systems.org/ns/dmscloud/schema/v5.0/ dmsCloud-schema.xsd">
+
+    <propertyStringDefinition>
+        <id>email:from</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail sender</description>
+        <propertyType>string</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>email:to</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail recipients</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>email:cc</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail cc</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>email:bcc</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail bcc</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>email:subject</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail subject</description>
+        <propertyType>string</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyIntegerDefinition>
+        <id>email:attachmentcount</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail attachment count</description>
+        <propertyType>integer</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+        <defaultValue>0</defaultValue>
+    </propertyIntegerDefinition>
+    <propertyStringDefinition>
+        <id>email:attachmentnames</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail attachment names</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyTableDefinition>
+        <id>email:meta</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>Additional data</description>
+        <propertyType>table</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+        <propertyStringDefinition>
+            <id>email:key</id>
+            <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+            <description>Key of this additional data entry.</description>
+            <propertyType>string</propertyType>
+            <cardinality>single</cardinality>
+            <required>false</required>
+        </propertyStringDefinition>
+        <propertyStringDefinition>
+            <id>email:value</id>
+            <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+            <description>Value of this additional data entry.</description>
+            <propertyType>string</propertyType>
+            <cardinality>single</cardinality>
+            <required>false</required>
+        </propertyStringDefinition>
+    </propertyTableDefinition>
+    <propertyStringDefinition>
+        <id>email:messageid</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail message id</description>
+        <propertyType>string</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+    </propertyStringDefinition>
+    <propertyDateTimeDefinition>
+        <id>email:received</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <description>system-wide field for the e-mail received</description>
+        <propertyType>integer</propertyType>
+        <cardinality>single</cardinality>
+        <required>false</required>
+    </propertyDateTimeDefinition>
+
+    <typeDocumentDefinition>
+        <id>email:email</id>
+        <localNamespace>urn:optimal-systems.de:dmscloud:email</localNamespace>
+        <baseId>enaio:document</baseId>
+        <propertyReference>email:fromm</propertyReference>
+        <propertyReference>email:too</propertyReference>
+        <propertyReference>email:zeze</propertyReference>
+        <propertyReference>email:cbb</propertyReference>
+        <propertyReference>email:supject</propertyReference>
+        <propertyReference>email:attachmintcount</propertyReference>
+        <propertyReference>email:attachmintnames</propertyReference>
+        <propertyReference>email:metha</propertyReference>
+        <propertyReference>email:sausageid</propertyReference>
+        <propertyReference>email:received</propertyReference>
+        <contentStreamAllowed>required</contentStreamAllowed>
+    </typeDocumentDefinition>
+
+</schema>

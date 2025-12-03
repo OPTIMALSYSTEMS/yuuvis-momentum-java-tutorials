@@ -1,0 +1,13 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "system:document"
+      }
+    },
+    "contentStreams": [{
+      "fileName": "1080px-Deilenaar.jpeg",
+      "cid": "cid"
+    }]
+  }]
+}

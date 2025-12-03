@@ -1,0 +1,9 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "system:document"
+      }
+    }
+  }]
+}

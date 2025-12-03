@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://optimal-systems.org/ns/dmscloud/schema/v5.0/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://optimal-systems.org/ns/dmscloud/schema/v5.0/ dmsCloud-schema.xsd">
+
+    <propertyIntegerDefinition>
+        <id>petshop:capacity</id>
+        <description>maximum number of animals to live in the enclosure</description>
+        <propertyType>integer</propertyType>
+        <cardinality>single</cardinality>
+        <required>true</required>
+    </propertyIntegerDefinition>
+    <propertyStringDefinition>
+        <id>petshop:staffInCharge</id>
+        <description>name of the responsible shop employees</description>
+        <propertyType>string</propertyType>
+        <cardinality>multi</cardinality>
+        <required>true</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>petshop:breed</id>
+        <description>name of the pet's breed</description>
+        <propertyType>string</propertyType>
+        <cardinality>single</cardinality>
+        <required>true</required>
+    </propertyStringDefinition>
+    <propertyStringDefinition>
+        <id>petshop:species</id>
+        <description>name of the pet's species</description>
+        <propertyType>string</propertyType>
+        <cardinality>single</cardinality>
+        <required>true</required>
+    </propertyStringDefinition>
+    <propertyDecimalDefinition>
+        <id>petshop:price</id>
+        <description>price for the pet in Euro</description>
+        <propertyType>decimal</propertyType>
+        <cardinality>single</cardinality>
+        <required>true</required>
+    </propertyDecimalDefinition>
+    <propertyDateTimeDefinition>
+        <id>petshop:dateOfBirth</id>
+        <description>the pet's date of birth</description>
+        <propertyType>datetime</propertyType>
+        <cardinality>single</cardinality>
+        <required>true</required>
+    </propertyDateTimeDefinition>
+    <typeRelationshipDefinition>
+        <id>petshop:petLivesIn</id>
+        <baseId>system:relationship</baseId>
+        <allowedSourceType>
+            <objectTypeReference>appPetshop:pet</objectTypeReference>
+        </allowedSourceType>
+        <allowedTargetType>
+            <objectTypeReference>appPetshop:enclosure</objectTypeReference>
+        </allowedTargetType>
+    </typeRelationshipDefinition>
+    <typeSecondaryDefinition>
+        <id>petshop:pet</id>
+        <baseId>system:secondary</baseId>
+        <propertyReference>petshop:breed</propertyReference>
+        <propertyReference>petshop:species</propertyReference>
+        <propertyReference>petshop:dateOfBirth</propertyReference>
+        <propertyReference>petshop:price</propertyReference>
+        <contentStreamAllowed>allowed</contentStreamAllowed>
+    </typeSecondaryDefinition>
+    <typeSecondaryDefinition>
+        <id>petshop:enclosure</id>
+        <baseId>system:secondary</baseId>
+        <propertyReference>petshop:capacity</propertyReference>
+        <propertyReference>petshop:staffInCharge</propertyReference>
+        <contentStreamAllowed>allowed</contentStreamAllowed>
+    </typeSecondaryDefinition>
+
+</schema>

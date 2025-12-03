@@ -1,0 +1,55 @@
+{
+  "objects": [{
+    "properties": {
+      "objectTypeId": {
+        "value": "appBibjsonsample:medium"
+      },
+      "appBibjsonsample:bibjson": {
+        "value": {
+          "metadata": {
+            "collection": "ym_concepts",
+            "label": "yuuvis(R) Momentum Core Concepts",
+            "description": "Documentation for yuuvis(R) Momentum Core in a structured, theoretical way, with links to the tutorial section.",
+            "id": "ID_of_collection",
+            "owner": "OS",
+            "created": "2020-06-09T15:04:12.944Z",
+            "modified": "2021-06-10T11:05:17.166Z",
+            "source": "https://help.optimal-systems.com/yuuvis_develop/display/YMY/x/-4BkAg",
+            "records": 2
+          },
+          "records": [
+            {
+              "collection": "ym_concepts",
+              "type": "article",
+              "title": "Schema - Defining Object Types",
+              "id": "ID_of_schema_article",
+              "link": "https://help.optimal-systems.com/yuuvis_develop/display/YMY/x/AYFkAg",
+              "author":[
+                {"name": "Heinrich Schuetzel"},
+                {"name": "George Trader"},
+                {"name": "Johann Fluss"}
+              ],
+              "created": "2020-06-09T15:04:12.944Z",
+              "modified": "2021-06-10T08:53:23.532Z"
+            },
+            {
+              "collection": "ym_concepts",
+              "type": "article",
+              "title": "Search Query Language",
+              "id": "ID_of_query_article",
+              "link": "https://help.optimal-systems.com/yuuvis_develop/display/YMY/x/gIFkAg",
+              "author":[
+                {"name": "Andrea Schumann"},
+                {"name": "Franz Lissner"},
+                {"name": "Hans Kammer"},
+                {"name": "Johann Fluss"}
+              ],
+              "created": "2020-06-16T14:03:01.833Z",
+              "modified": "2021-06-02T09:54:12.643Z"
+            }
+          ]
+        }
+      }
+    }
+  }]
+}
