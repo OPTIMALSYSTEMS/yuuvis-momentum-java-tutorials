@@ -6,6 +6,8 @@
       }
     },
     "contentStreams": [{
+      "mimeType": "text/plain",
+      "fileName": "schneiderlein.txt",
       "cid": "cid1"
     }]
   },
@@ -16,6 +18,8 @@
         }
       },
       "contentStreams": [{
+        "mimeType": "image/jpeg",
+        "fileName": "960px-Offterdinger_Das_tapfere_Schneiderlein.jpeg",
         "cid": "cid2"
       }]
     }]
