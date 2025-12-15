@@ -10,10 +10,12 @@ import java.io.InputStream;
 public class ResourceResponses {
 
 
-    public static void saveXMLResource (Response response) {
-        try {
-            InputStream in = response.body().byteStream();
-            FileOutputStream out = new FileOutputStream("downloaded_file.xml");
+    public static void saveXmlFile (Response response) {
+        try(
+                InputStream in = response.body().byteStream();
+                FileOutputStream out = new FileOutputStream("downloaded_file.xml");
+        )
+        {
             out.write(in.readAllBytes());
         } catch (Exception e) {
             e.printStackTrace();

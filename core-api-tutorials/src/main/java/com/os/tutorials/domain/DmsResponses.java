@@ -20,9 +20,11 @@ public class DmsResponses {
     }
 
     public static void saveTxtFile (Response response) {
-        try {
+        try(
             InputStream in = response.body().byteStream();
             FileOutputStream out = new FileOutputStream("downloaded_file.txt");
+        )
+        {
             out.write(in.readAllBytes());
         } catch (Exception e) {
             e.printStackTrace();

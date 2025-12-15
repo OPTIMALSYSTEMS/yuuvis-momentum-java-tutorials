@@ -16,7 +16,7 @@ public class SchemaTutorial {
 
             //get applied schema
             Response activeSchemaResponse = client.newCall(ResourceRequests.getAppliedSchema()).execute();
-            ResourceResponses.saveXMLResource(activeSchemaResponse);
+            ResourceResponses.saveXmlFile(activeSchemaResponse);
             System.out.println("Successfully downloaded the applied schema. Please check your project's target directory.");
 
             //validate app schema
