@@ -1,4 +1,4 @@
-package com.os.tutorials;
+package com.os.tutorials.domain;
 
 import okhttp3.Response;
 import org.json.JSONObject;

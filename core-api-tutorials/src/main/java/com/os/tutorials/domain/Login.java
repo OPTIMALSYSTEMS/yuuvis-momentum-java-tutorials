@@ -1,4 +1,4 @@
-package com.os.tutorials;
+package com.os.tutorials.domain;
 
 import okhttp3.*;
 
@@ -18,11 +18,8 @@ public class Login {
         try {
             OkHttpClient client = Login.buildClient();
 
-            Response getVersionResponse = client.newCall(getVersion(client)).execute();
+            Response getVersionResponse = client.newCall(DmsRequests.getVersion(client)).execute();
             System.out.println(getVersionResponse.body().string());
-
-            Response getVersionResponse2 = client.newCall(getVersion2(client)).execute();
-            System.out.println(getVersionResponse2.body().string());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,24 +31,6 @@ public class Login {
         OkHttpClient client = new OkHttpClient.Builder().cookieJar(cookieJar).build();
 
         return client;
-    }
-
-    public static Request getVersion(OkHttpClient client) {
-
-        return new Request.Builder()
-                .header("Authorization", auth)
-                .header("X-ID-TENANT-NAME", tenant)
-                .url(baseUrl + "/api/dms/info")
-                .build();
-
-    }
-    public static Request getVersion2(OkHttpClient client) {
-
-        return new Request.Builder()
-                .header("X-ID-TENANT-NAME", tenant)
-                .url(baseUrl + "/api/dms/info")
-                .build();
-
     }
 
     public Login() {}

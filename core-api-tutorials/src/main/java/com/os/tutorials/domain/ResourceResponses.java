@@ -1,4 +1,4 @@
-package com.os.tutorials;
+package com.os.tutorials.domain;
 
 import org.json.JSONObject;
 

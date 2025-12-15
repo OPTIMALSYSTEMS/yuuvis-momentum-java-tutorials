@@ -1,9 +1,6 @@
-package com.os.tutorials;
+package com.os.tutorials.domain;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 
 import java.io.File;
 
@@ -13,6 +10,16 @@ public class DmsRequests {
     public static final MediaType JPEG = MediaType.parse("image/jpeg; charset=utf-8");
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    public static Request getVersion(OkHttpClient client) {
+
+        return new Request.Builder()
+                .header("Authorization", Login.auth)
+                .header("X-ID-TENANT-NAME", Login.tenant)
+                .url(Login.baseUrl + "/api/dms/info")
+                .build();
+
+    }
 
     public static Request importSingleDocument(String resourcesDirectory, String metadataSource, String contentSource, MediaType contenttype) {
         RequestBody singleImportRequestBody = new MultipartBody

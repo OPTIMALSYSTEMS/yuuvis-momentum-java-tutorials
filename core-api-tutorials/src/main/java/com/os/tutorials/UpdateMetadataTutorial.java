@@ -1,5 +1,8 @@
 package com.os.tutorials;
 
+import com.os.tutorials.domain.DmsRequests;
+import com.os.tutorials.domain.DmsResponses;
+import com.os.tutorials.domain.Login;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;

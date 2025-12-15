@@ -1,5 +1,8 @@
 package com.os.tutorials;
 
+import com.os.tutorials.domain.Login;
+import com.os.tutorials.domain.ResourceRequests;
+import com.os.tutorials.domain.ResourceResponses;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
