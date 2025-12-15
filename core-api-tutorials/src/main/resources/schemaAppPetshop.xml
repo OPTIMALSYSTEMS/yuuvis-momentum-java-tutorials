@@ -4,49 +4,49 @@
         xsi:schemaLocation="http://optimal-systems.org/ns/dmscloud/schema/v5.0/ dmsCloud-schema.xsd">
 
     <propertyIntegerDefinition>
-        <id>petshop:capacity</id>
+        <id>appPetshop:capacity</id>
         <description>maximum number of animals to live in the enclosure</description>
         <propertyType>integer</propertyType>
         <cardinality>single</cardinality>
         <required>true</required>
     </propertyIntegerDefinition>
     <propertyStringDefinition>
-        <id>petshop:staffInCharge</id>
+        <id>appPetshop:staffInCharge</id>
         <description>name of the responsible shop employees</description>
         <propertyType>string</propertyType>
         <cardinality>multi</cardinality>
         <required>true</required>
     </propertyStringDefinition>
     <propertyStringDefinition>
-        <id>petshop:breed</id>
+        <id>appPetshop:breed</id>
         <description>name of the pet's breed</description>
         <propertyType>string</propertyType>
         <cardinality>single</cardinality>
         <required>true</required>
     </propertyStringDefinition>
     <propertyStringDefinition>
-        <id>petshop:species</id>
+        <id>appPetshop:species</id>
         <description>name of the pet's species</description>
         <propertyType>string</propertyType>
         <cardinality>single</cardinality>
         <required>true</required>
     </propertyStringDefinition>
     <propertyDecimalDefinition>
-        <id>petshop:price</id>
+        <id>appPetshop:price</id>
         <description>price for the pet in Euro</description>
         <propertyType>decimal</propertyType>
         <cardinality>single</cardinality>
         <required>true</required>
     </propertyDecimalDefinition>
     <propertyDateTimeDefinition>
-        <id>petshop:dateOfBirth</id>
+        <id>appPetshop:dateOfBirth</id>
         <description>the pet's date of birth</description>
         <propertyType>datetime</propertyType>
         <cardinality>single</cardinality>
         <required>true</required>
     </propertyDateTimeDefinition>
     <typeRelationshipDefinition>
-        <id>petshop:petLivesIn</id>
+        <id>appPetshop:petLivesIn</id>
         <baseId>system:relationship</baseId>
         <allowedSourceType>
             <objectTypeReference>appPetshop:pet</objectTypeReference>
@@ -56,19 +56,19 @@
         </allowedTargetType>
     </typeRelationshipDefinition>
     <typeSecondaryDefinition>
-        <id>petshop:pet</id>
+        <id>appPetshop:pet</id>
         <baseId>system:secondary</baseId>
-        <propertyReference>petshop:breed</propertyReference>
-        <propertyReference>petshop:species</propertyReference>
-        <propertyReference>petshop:dateOfBirth</propertyReference>
-        <propertyReference>petshop:price</propertyReference>
+        <propertyReference>appPetshop:breed</propertyReference>
+        <propertyReference>appPetshop:species</propertyReference>
+        <propertyReference>appPetshop:dateOfBirth</propertyReference>
+        <propertyReference>appPetshop:price</propertyReference>
         <contentStreamAllowed>allowed</contentStreamAllowed>
     </typeSecondaryDefinition>
     <typeSecondaryDefinition>
-        <id>petshop:enclosure</id>
+        <id>appPetshop:enclosure</id>
         <baseId>system:secondary</baseId>
-        <propertyReference>petshop:capacity</propertyReference>
-        <propertyReference>petshop:staffInCharge</propertyReference>
+        <propertyReference>appPetshop:capacity</propertyReference>
+        <propertyReference>appPetshop:staffInCharge</propertyReference>
         <contentStreamAllowed>allowed</contentStreamAllowed>
     </typeSecondaryDefinition>
 

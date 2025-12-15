@@ -1,6 +1,10 @@
 package com.os.tutorials;
 
+import okhttp3.Response;
 import org.json.JSONObject;
+
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 
 public class DmsResponses {
@@ -14,31 +18,15 @@ public class DmsResponses {
                 .getJSONObject("system:objectId")
                 .getString("value");
     }
-    public static String getContentStreamId(String responseJson){
-        JSONObject jsonObject = new JSONObject(responseJson);
-        return jsonObject.getJSONArray("objects")
-                .getJSONObject(0)
-                .getJSONArray("contentStreams")
-                .getJSONObject(0)
-                .getString("contentStreamId");
-    }
 
-    public static String getRepositoryId(String responseJson){
-        JSONObject jsonObject = new JSONObject(responseJson);
-        return jsonObject.getJSONArray("objects")
-                .getJSONObject(0)
-                .getJSONArray("contentStreams")
-                .getJSONObject(0)
-                .getString("repositoryId");
-    }
-
-    public static String getArchivePath(String responseJson){
-        JSONObject jsonObject = new JSONObject(responseJson);
-        return jsonObject.getJSONArray("objects")
-                .getJSONObject(0)
-                .getJSONArray("contentStreams")
-                .getJSONObject(0)
-                .getString("archivePath");
+    public static void saveTxtFile (Response response) {
+        try {
+            InputStream in = response.body().byteStream();
+            FileOutputStream out = new FileOutputStream("downloaded_file.txt");
+            out.write(in.readAllBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public DmsResponses() {}

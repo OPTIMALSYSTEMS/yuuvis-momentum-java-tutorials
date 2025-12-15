@@ -4,15 +4,15 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-public class GetTutorial {
+public class UpdateMetadataTutorial {
 
-    public static final MediaType PLAINTEXT = MediaType.parse("text/plain; charset=utf-8");
     public static final MediaType JPEG = MediaType.parse("image/jpeg; charset=utf-8");
     public static final String resourcesDirectory = "./src/main/resources/";
 
-    //Resources for Initial Import
-    public static final String metadataFilename = "metadata.json";
-    public static final String plainTextFilename = "geislein.txt";
+    //Resources for Initial Import and Update
+    public static final String metadataFilename = "metadataRabbit.json";
+    public static final String metadataUpdateFilename = "metadataRabbitUpdate.json";
+    public static final String plainTextFilename = "1080px-Deilenaar.jpeg";
 
 
     public static void main(String[] args) {
@@ -20,7 +20,7 @@ public class GetTutorial {
             OkHttpClient client = Login.buildClient();
 
             //Initial Single Import of a plain text document
-            Response singleImportResponse = client.newCall(DmsRequests.importSingleDocument(resourcesDirectory, metadataFilename, plainTextFilename, PLAINTEXT)).execute();
+            Response singleImportResponse = client.newCall(DmsRequests.importSingleDocument(resourcesDirectory, metadataFilename, plainTextFilename, JPEG)).execute();
             String singleImportResponseString = singleImportResponse.body().string();
             System.out.println(singleImportResponseString);
 
@@ -32,10 +32,10 @@ public class GetTutorial {
             String metadataResponseString = metadataResponse.body().string();
             System.out.println(metadataResponseString);
 
-            //Retrieve and store Binary Content (as TXT file in this example)
-            Response contentResponse = client.newCall(DmsRequests.getContent(objectId)).execute();
-            DmsResponses.saveTxtFile(contentResponse);
-            System.out.println("Successfully downloaded the binary content file. Please check your project's target directory.");
+            //Update Metadata
+            Response updateResponse = client.newCall(DmsRequests.patchUpdateMetadata(objectId, resourcesDirectory, metadataUpdateFilename)).execute();
+            String updateResponseString = updateResponse.body().string();
+            System.out.println(updateResponseString);
 
         } catch (Exception e) {
             e.printStackTrace();

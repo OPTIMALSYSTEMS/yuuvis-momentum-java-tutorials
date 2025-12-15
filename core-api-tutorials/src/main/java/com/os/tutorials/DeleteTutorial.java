@@ -4,7 +4,10 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-public class GetTutorial {
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
+public class DeleteTutorial {
 
     public static final MediaType PLAINTEXT = MediaType.parse("text/plain; charset=utf-8");
     public static final MediaType JPEG = MediaType.parse("image/jpeg; charset=utf-8");
@@ -32,10 +35,10 @@ public class GetTutorial {
             String metadataResponseString = metadataResponse.body().string();
             System.out.println(metadataResponseString);
 
-            //Retrieve and store Binary Content (as TXT file in this example)
-            Response contentResponse = client.newCall(DmsRequests.getContent(objectId)).execute();
-            DmsResponses.saveTxtFile(contentResponse);
-            System.out.println("Successfully downloaded the binary content file. Please check your project's target directory.");
+            //Delete object
+            Response deleteResponse = client.newCall(DmsRequests.deleteObject(objectId)).execute();
+            if(deleteResponse.code() == 200) System.out.println("Successfully deleted.");
+            else System.out.println("Error while deleting: "+deleteResponse.code());
 
         } catch (Exception e) {
             e.printStackTrace();

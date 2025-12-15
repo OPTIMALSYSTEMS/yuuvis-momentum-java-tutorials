@@ -11,11 +11,8 @@ public class Login {
     public static final String userpassword = "changeme";
     public static final String auth = "Basic "+ Base64.getEncoder().encodeToString((username+":"+userpassword).getBytes());
     public static final String tenant = "myfirsttenant";
-    public static final String baseUrl = "http://123.456.78.9:30080";
+    public static final String baseUrl = "http://192.168.58.2:30080";
 
-    public Login() {
-
-    }
 
     public static void main(String[] args) {
         try {
@@ -56,4 +53,6 @@ public class Login {
                 .build();
 
     }
+
+    public Login() {}
 }

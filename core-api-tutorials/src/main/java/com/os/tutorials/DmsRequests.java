@@ -6,8 +6,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 
 import java.io.File;
-import java.lang.Object;
-import java.util.HashMap;
 
 public class DmsRequests {
 
@@ -77,6 +75,24 @@ public class DmsRequests {
                 .header("X-ID-TENANT-NAME", Login.tenant)
                 .url(Login.baseUrl+ "/api/dms/objects/" + objectId + "/contents/file")
                 .get().build();
+    }
+
+    public static Request deleteObject(String objectId) {
+        return new Request.Builder()
+                .header("Authorization", Login.auth)
+                .header("X-ID-TENANT-NAME", Login.tenant)
+                .url(Login.baseUrl+ "/api/dms/objects/" + objectId + "/contents/file")
+                .delete().build();
+    }
+
+    public static Request patchUpdateMetadata (String objectId, String resourcesDirectory, String metadataSource) {
+
+        return new Request.Builder()
+                .header("Authorization", Login.auth)
+                .header("X-ID-TENANT-NAME", Login.tenant)
+                .url(Login.baseUrl + "/api/dms/objects/" + objectId)
+                .patch(RequestBody.create(JSON, new File(resourcesDirectory+metadataSource)))
+                .build();
     }
 
     public DmsRequests() {}
